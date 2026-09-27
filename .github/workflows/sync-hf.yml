@@ -1,0 +1,19 @@
+name: Sync to Hugging Face
+on:
+  push:
+    branches: [main]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Push to HF
+        run: |
+          git config user.email "your@email.com"
+          git config user.name "Your Name"
+          git lfs install
+          git remote add hf https://huggingface.co/datasets/username/my-dataset
+          git push hf HEAD:main
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
