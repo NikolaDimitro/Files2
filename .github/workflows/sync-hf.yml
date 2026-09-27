@@ -1,19 +1,30 @@
 name: Sync to Hugging Face
+
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Push to HF
+        with:
+          fetch-depth: 0
+
+      - name: Install Git LFS
         run: |
-          git config user.email "your@email.com"
-          git config user.name "Your Name"
+          sudo apt-get update
+          sudo apt-get install -y git-lfs
           git lfs install
-          git remote add hf https://huggingface.co/datasets/username/my-dataset
-          git push hf HEAD:main
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "your-email@example.com"
+          git config --global user.name "NikolaDimitro"
+
+      - name: Push to Hugging Face
+        run: |
+          git remote add hf https://oauth2:${{ secrets.HF_TOKEN }}@huggingface.co/datasets/Moon8090/Files
+          git push hf HEAD:main --force
